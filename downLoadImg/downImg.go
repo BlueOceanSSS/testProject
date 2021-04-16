@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -23,5 +24,8 @@ func downLoadImg(imgUrl string) {
 	resp, _ := http.Get(imgUrl)
 	imgBytes, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
-	ioutil.WriteFile("/Users/bytedance/go/src/testProject/Img/"+strconv.Itoa(int(time.Now().UnixNano()))+".jpg", imgBytes, 0644)
+	err := ioutil.WriteFile("/Users/bytedance/go/src/testProject/Img/"+strconv.Itoa(int(time.Now().UnixNano()))+".jpg", imgBytes, 0644)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
