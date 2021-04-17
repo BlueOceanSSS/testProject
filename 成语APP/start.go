@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 const (
@@ -12,12 +14,13 @@ const (
 		appname:just_test_app
 		secret:a5c3cb1b239748a0bc618d29e8c6b99a
 	*/
+	fileName      = "C:\\Users\\DSH\\GolandProjects\\testProject\\成语APP\\"
 	showapi_appid = "602142"
 	showapi_sign  = "a5c3cb1b239748a0bc618d29e8c6b99a"
-	keyword       = "火"
+	keyword       = "三"
 	page          = "1"
 	rows          = "10"
-	idiomApi      = "https://route.showapi.com/1196-1?" +
+	idiomApi      = "http://route.showapi.com/1196-1?" +
 		"showapi_appid=" + showapi_appid +
 		"&showapi_sign=" + showapi_sign +
 		"&keyword=" + keyword +
@@ -25,8 +28,44 @@ const (
 		"&rows=" + rows
 )
 
+type Idiom struct {
+	Title      string
+	Spell      string
+	Content    string
+	Sample     string
+	Derivation string
+}
+
+var IdiomsMap map[string]Idiom
+
 func main() {
-	resp, err := http.Get(idiomApi)
+	IdiomsMap = make(map[string]Idiom)
+	jsonStr, _ := getJson(idiomApi)
+	ParseJson2Idioms(jsonStr)
+	//数据持久化
+	dstFile, _ := os.OpenFile(fileName+"成语大全.json", os.O_WRONLY, 0666)
+	encoder := json.NewEncoder(dstFile)
+	err := encoder.Encode(IdiomsMap)
+	if err != nil {
+		fmt.Println("写出文件失败，err = ", err)
+		return
+	}
+	fmt.Println("写出文件成功")
+}
+
+func ParseJson2Idioms(jsonStr string) {
+	tempMap := make(map[string]interface{})
+	json.Unmarshal([]byte(jsonStr), &tempMap)
+	dataSlice := tempMap["showapi_res_body"].(map[string]interface{})["data"].([]interface{})
+	for _, value := range dataSlice {
+		title := value.(map[string]interface{})["title"].(string)
+		idiom := Idiom{Title: title}
+		IdiomsMap[title] = idiom
+	}
+}
+
+func getJson(url string) (jsonStr string, err error) {
+	resp, err := http.Get(url)
 	defer resp.Body.Close()
 	if err != nil {
 		fmt.Println("访问失败")
@@ -35,7 +74,8 @@ func main() {
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("数据读取失败")
+		return
 	}
-	respStr := string(bytes)
-	fmt.Println(respStr)
+	jsonStr = string(bytes)
+	return
 }
