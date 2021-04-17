@@ -13,7 +13,7 @@ import (
 const (
 	wangyiUrl   = "https://www.163.com/"
 	bilibiliUrl = "http://www.jj20.com/"
-	windowsFile = "C:\\Users\\DSH\\GolandProjects\\testProject\\Img\\"
+	windowsFile = "C:\\Users\\DSH\\GolandProjects\\testProject\\异步爬取图片\\Img\\"
 )
 
 var (

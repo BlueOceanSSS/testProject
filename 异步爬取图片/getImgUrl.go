@@ -10,14 +10,13 @@ var (
 	reImg = `<img[\s\S]+?src="(http[\s\S]+?)"`
 )
 
-
-func getImgUrl(url string) []string{
+func getImgUrl(url string) []string {
 	html := getHtml(url)
 	re := regexp.MustCompile(reImg)
 	imgs := re.FindAllStringSubmatch(html, -1)
 	imgUrls := make([]string, 0)
 	for _, url := range imgs {
-		imgUrls = append(imgUrls,url[1])
+		imgUrls = append(imgUrls, url[1])
 	}
 	return imgUrls
 }
