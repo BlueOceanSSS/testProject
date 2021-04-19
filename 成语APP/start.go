@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -14,10 +14,11 @@ const (
 		appname:just_test_app
 		secret:a5c3cb1b239748a0bc618d29e8c6b99a
 	*/
-	fileName      = "C:\\Users\\DSH\\GolandProjects\\testProject\\成语APP\\"
+	winFileName   = "C:\\Users\\DSH\\GolandProjects\\testProject\\成语APP\\"
+	macFileName   = "/Users/bytedance/go/src/testProject/成语APP/"
 	showapi_appid = "602142"
 	showapi_sign  = "a5c3cb1b239748a0bc618d29e8c6b99a"
-	keyword       = "三"
+	keyword       = "耳"
 	page          = "1"
 	rows          = "10"
 	idiomApi      = "http://route.showapi.com/1196-1?" +
@@ -43,7 +44,7 @@ func main() {
 	jsonStr, _ := getJson(idiomApi)
 	ParseJson2Idioms(jsonStr)
 	//数据持久化
-	dstFile, _ := os.OpenFile(fileName+"成语大全.json", os.O_WRONLY, 0666)
+	dstFile, _ := os.OpenFile(macFileName+"成语大全.json", os.O_CREATE|os.O_WRONLY, 0666)
 	encoder := json.NewEncoder(dstFile)
 	err := encoder.Encode(IdiomsMap)
 	if err != nil {
@@ -71,7 +72,8 @@ func getJson(url string) (jsonStr string, err error) {
 		fmt.Println("访问失败")
 		return
 	}
-	bytes, err := io.ReadAll(resp.Body)
+	bytes, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		fmt.Println("数据读取失败")
 		return

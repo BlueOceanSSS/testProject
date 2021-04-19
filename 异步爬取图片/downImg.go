@@ -14,6 +14,7 @@ const (
 	wangyiUrl   = "https://www.163.com/"
 	bilibiliUrl = "http://www.jj20.com/"
 	windowsFile = "C:\\Users\\DSH\\GolandProjects\\testProject\\异步爬取图片\\Img\\"
+	macFile     = "/Users/bytedance/go/src/testProject/异步爬取图片/Img/"
 )
 
 var (
@@ -61,7 +62,7 @@ func downLoadImg(imgUrl string) {
 	resp, _ := http.Get(imgUrl)
 	imgBytes, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
-	err := ioutil.WriteFile(windowsFile+getRandomName(), imgBytes, 0644)
+	err := ioutil.WriteFile(macFile+getRandomName(), imgBytes, 0644)
 	if err != nil {
 		fmt.Println("下载失败")
 	} else {
