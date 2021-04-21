@@ -16,19 +16,16 @@ var (
 const (
 	phoneUrl = "https://www.jihaoba.com/shouji/all/"
 	emailUrl = "https://club.autohome.com.cn/bbs/thread/ec014de6c2b25cca/80053303-21.html"
-
 )
 
-
-func HanderErr(err error,when string){
-	if err != nil{
-		fmt.Println(when,err)
+func HanderErr(err error, when string) {
+	if err != nil {
+		fmt.Println(when, err)
 		os.Exit(1)
 	}
 }
 
-
-func main()  {
+func main() {
 	content := getResp(emailUrl)
 	//fmt.Println(content)
 	re := regexp.MustCompile(reEmail)
